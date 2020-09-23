@@ -22,5 +22,4 @@ int main()
               << "r2 =" << std::endl << r2 << std::endl << std::endl
               << "r4 =" << std::endl << r4 << std::endl << std::endl
               << "r5 =" << std::endl << r5 << std::endl << std::endl;
-
 }

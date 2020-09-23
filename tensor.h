@@ -87,7 +87,7 @@ class Tensor<T>
     T value;
 
 public:
-    Tensor<T>() : value(0.0l) {  }
+    Tensor<T>() : value() {  }
     Tensor<T>(T const& other) : value(other) {  }
     Tensor<T>(T&& other) { swap(value, other); }
     Tensor<T>(Tensor<T> const& other) : value(other.value) {  }

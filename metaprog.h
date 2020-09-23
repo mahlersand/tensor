@@ -8,16 +8,69 @@
 #include <functional>
 #include <iostream>
 
-//First returns the first value in a size_t based parameter pack
 
-template<size_t ...>
-struct First;
+//Parameter pack handling
+template<typename ...>
+struct TypePack;
 
-template<size_t DimsHead, std::size_t ...DimsTail>
-struct First<DimsHead, DimsTail...>
+template<auto ...>
+struct ValuePack;
+
+template<typename ...T>
+TypePack<T ...> __pp();
+
+template<auto ...I>
+ValuePack<I ...> __pp();
+
+#define ParameterPack(...) decltype(__pp<__VA_ARGS__>())
+
+template<typename ...MTypes>
+struct TypePackBase
 {
-    static constexpr std::size_t value = DimsHead;
+    template<typename ...Types>
+    using Append = TypePack<MTypes ..., Types ...>;
+
+    template<typename ...Types>
+    using Prepend = TypePack<Types ..., MTypes ...>;
+
+    template<template<typename ...> typename Container>
+    using ToContainer = Container<MTypes ...>;
 };
+
+template<>
+struct TypePack<> :
+        TypePackBase<>
+{
+    using Reverse = TypePack<>;
+};
+
+template<typename TypeHead, typename ...TypeTail>
+struct TypePack<TypeHead, TypeTail ...> :
+        TypePackBase<TypeHead, TypeTail ...>
+{
+    using Reverse = typename TypePack<TypeTail ...>::Reverse::template Append<TypeHead>;
+
+    using Head = TypeHead;
+
+    using Tail = TypePack<TypeTail ...>;
+
+    using Init = typename Reverse::Tail::Reverse;
+
+    using Last = typename Reverse::Head;
+};
+
+
+
+
+
+
+template<auto ValueHead, auto ...ValueTail>
+struct ValuePack<ValueHead, ValueTail ...>
+{
+    static constexpr auto First = ValueHead;
+};
+
+
 
 
 
